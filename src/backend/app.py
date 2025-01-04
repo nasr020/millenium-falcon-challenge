@@ -5,6 +5,7 @@ import tempfile
 from src.core.core import OddsService
 from contextlib import asynccontextmanager
 from src.parser.parser import parse_falcon_config, parse_routes_db
+from fastapi.middleware.cors import CORSMiddleware
 
 SERVICE = OddsService()
 
@@ -35,6 +36,14 @@ app = FastAPI(
     description="Compute the odds that the Millennium Falcon reaches Endor in time.",
     version="0.1.0",
     lifespan=lifespan,
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
