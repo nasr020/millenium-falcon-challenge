@@ -1,0 +1,27 @@
+class Galaxy:
+    """
+    Stores the Galaxy as an adjacency list:
+    galaxy[planetA][planetB] = travel_time
+    """
+
+    def __init__(self):
+        self.routes: dict[str, dict[str, int]] = {}
+
+    def add_route(self, origin: str, destination: str, travel_time: int):
+        # Add forward path
+        if origin not in self.routes:
+            self.routes[origin] = {}
+        self.routes[origin][destination] = travel_time
+
+        # Add reverse path (undirected graph)
+        if destination not in self.routes:
+            self.routes[destination] = {}
+        self.routes[destination][origin] = travel_time
+
+    def successors(self, planet: str) -> dict[str, int]:
+        """All planets reachable from planet"""
+        return self.routes.get(planet, {}).keys()
+
+    def edge_value(self, origin: str, destination: str) -> int:
+        """Travel time from origin to destination or None if not possible directly"""
+        return self.routes.get(origin, {}).get(destination, None)
