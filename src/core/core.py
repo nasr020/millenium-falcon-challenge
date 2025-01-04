@@ -18,9 +18,10 @@ class OddsService:
         """Load Falcon Config and Empire Data and Galaxy DB routes"""
         self.empire = parse_empire_data(empire_data_path)
 
-        self.falcon_config = parse_falcon_config(config_file_path)
+        if self.falcon_config is None:
+            self.falcon_config = parse_falcon_config(config_file_path)
 
-        self.galaxy = parse_routes_db(self.falcon_config.routes_db_path)
+            self.galaxy = parse_routes_db(self.falcon_config.routes_db_path)
 
         for bh in self.empire.bounty_hunters:
             if bh.planet not in self.bounty_hunter_presence:
