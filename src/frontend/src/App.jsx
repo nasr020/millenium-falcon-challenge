@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { Upload, AlertCircle, CheckCircle2, XCircle } from "lucide-react";
+import {
+  Upload,
+  AlertCircle,
+  CheckCircle2,
+  XCircle,
+  Clock,
+  Skull,
+} from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "./components/ui/alert";
 import {
   Card,
@@ -14,6 +21,7 @@ const App = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [fileName, setFileName] = useState("");
+  const [jsonContent, setJsonContent] = useState(null);
 
   const handleFileUpload = async (event) => {
     const file = event.target.files[0];
@@ -24,6 +32,7 @@ const App = () => {
     setOdds(null);
     setLoading(true);
     setFileName(file.name);
+    setJsonContent(null);
 
     // Validate file type
     if (!file.name.endsWith(".json")) {
@@ -37,6 +46,13 @@ const App = () => {
     formData.append("empire_file", file);
 
     try {
+      const fileContent = await file.text();
+      const parsedContent = JSON.parse(fileContent);
+      setJsonContent(parsedContent);
+
+      const formData = new FormData();
+      formData.append("empire_file", file);
+
       const response = await fetch("http://localhost:8000/api/v1/odds/", {
         method: "POST",
         body: formData,
@@ -124,6 +140,29 @@ const App = () => {
                   <AlertTitle>Error</AlertTitle>
                   <AlertDescription>{error}</AlertDescription>
                 </Alert>
+              )}
+
+              {jsonContent && (
+                <div className="bg-white rounded-lg border p-4 space-y-3">
+                  <div className="flex items-center space-x-2 text-gray-700">
+                    <Clock className="h-5 w-5" />
+                    <span className="font-medium">Countdown:</span>
+                    <span>{jsonContent.countdown} days</span>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex items-center space-x-2 text-gray-700">
+                      <Skull className="h-5 w-5" />
+                      <span className="font-medium">Bounty Hunters:</span>
+                    </div>
+                    <div className="ml-7">
+                      {jsonContent.bounty_hunters.map((hunter, index) => (
+                        <div key={index} className="text-sm text-gray-600 mb-1">
+                          Day {hunter.day}: Planet {hunter.planet}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               )}
 
               {odds !== null && !error && (
