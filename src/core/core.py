@@ -109,6 +109,19 @@ class OddsService:
                     route=journey_log.route + [journey_log.current_planet],
                 )
                 q.append(new_journey)
+
+            # Consider waiting at current planet
+            i = 2
+            while journey_log.travel_days + i <= self.empire.countdown:
+                new_journey = JourneyLog(
+                    current_planet=journey_log.current_planet,
+                    travel_days=journey_log.travel_days + i,
+                    autonomy_left=journey_log.autonomy_left - i,
+                    route=journey_log.route + [journey_log.current_planet],
+                )
+                q.append(new_journey)
+                i += 1
+                
         return successful_journeys
 
     def number_of_hunters_on_route(self, route: list[str]) -> int:
