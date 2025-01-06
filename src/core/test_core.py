@@ -41,7 +41,6 @@ def mock_galaxy():
 def test_compute_odds_no_paths(monkeypatch, mock_falcon_config, mock_empire_data):
     """
     If BFS finds no successful paths, odds should be 0.
-    We'll monkeypatch 'get_successful_paths' to return empty.
     """
     service = OddsService()
 
@@ -103,7 +102,7 @@ def test_compute_odds_some_bounty_hunters(monkeypatch, mock_falcon_config, mock_
     assert odds == 90, f"Expected 90% odds for a single bounty-hunter encounter, got {odds}"
 
 
-def test_get_successful_paths_basic(mock_falcon_config, mock_empire_data, mock_galaxy):
+def test_find_successful_paths_basic(mock_falcon_config, mock_empire_data, mock_galaxy):
     """
     Test BFS using a 'real' Galaxy object, ensuring the BFS logic returns correct paths.
     """
@@ -113,7 +112,7 @@ def test_get_successful_paths_basic(mock_falcon_config, mock_empire_data, mock_g
     service.galaxy = mock_galaxy
 
     # BFS
-    paths = service.get_successful_paths()
+    paths = service.find_successful_paths()
     assert isinstance(paths, list), "BFS did not return a list of journeys"
     for p in paths:
         assert p.current_planet == "Endor", (
