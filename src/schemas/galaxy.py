@@ -1,3 +1,7 @@
+import logging
+
+logger = logging.getLogger(__name__)
+
 class Galaxy:
     """
     Stores the Galaxy as an adjacency list:
@@ -8,6 +12,7 @@ class Galaxy:
         self.routes: dict[str, dict[str, int]] = {}
 
     def add_route(self, origin: str, destination: str, travel_time: int):
+        logger.info(f"Adding route from {origin} to {destination} in {travel_time} days")
         # Add forward path
         if origin not in self.routes:
             self.routes[origin] = {}
@@ -17,6 +22,8 @@ class Galaxy:
         if destination not in self.routes:
             self.routes[destination] = {}
         self.routes[destination][origin] = travel_time
+        logger.info("Current routes[%s]: %s", origin, self.routes[origin])
+        logger.info("Current routes[%s]: %s", destination, self.routes[destination])
 
     def successors(self, planet: str) -> dict[str, int]:
         """All planets reachable from planet"""
