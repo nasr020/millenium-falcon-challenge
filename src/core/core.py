@@ -109,7 +109,6 @@ class OddsService:
                     route=journey_log.route + [journey_log.current_planet],
                 )
                 q.append(new_journey)
-        print(successful_journeys)
         return successful_journeys
 
     def number_of_hunters_on_route(self, route: list[str]) -> int:
