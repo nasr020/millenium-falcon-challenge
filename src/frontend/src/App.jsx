@@ -48,6 +48,18 @@ const App = () => {
     try {
       const fileContent = await file.text();
       const parsedContent = JSON.parse(fileContent);
+
+      if (
+        !parsedContent.countdown ||
+        !Array.isArray(parsedContent.bounty_hunters)
+      ) {
+        setError(
+          "Invalid file format. The JSON must contain 'countdown' and 'bounty_hunters' fields."
+        );
+        setLoading(false);
+        return;
+      }
+
       setJsonContent(parsedContent);
 
       const formData = new FormData();
@@ -65,7 +77,8 @@ const App = () => {
       const data = await response.json();
       setOdds(data.odds);
     } catch (error) {
-      setError("Failed to compute odds. Please try again.");
+      setError("Failed to compute odds. Input json invalid.");
+      setJsonContent(null);
       console.error("Error:", error);
     } finally {
       setLoading(false);
@@ -155,7 +168,7 @@ const App = () => {
                       <span className="font-medium">Bounty Hunters:</span>
                     </div>
                     <div className="ml-7">
-                      {jsonContent.bounty_hunters.map((hunter, index) => (
+                      {jsonContent.bounty_hunters?.map((hunter, index) => (
                         <div key={index} className="text-sm text-gray-600 mb-1">
                           Day {hunter.day}: Planet {hunter.planet}
                         </div>
