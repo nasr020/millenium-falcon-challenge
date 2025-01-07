@@ -2,3 +2,4 @@ fastapi==0.115.6
 pytest==8.3.4
 setuptools==75.6.0
 uvicorn==0.34.0
+python-multipart==0.0.20
