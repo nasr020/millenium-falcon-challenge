@@ -21,6 +21,7 @@ Access the final result directly [here](http://millenium-falcon-challenge-nasr.l
   - [Running the Backend](#running-the-backend)
   - [Running the Frontend](#running-the-frontend)
   - [Using the CLI](#using-the-cli)
+  - [Running unit tests](#running-unit-tests)
 
 ## Features
 
@@ -149,3 +150,7 @@ Example CLI command:
 ```
 give-me-the-odds examples/example1/millennium-falcon.json examples/example1/empire.json
 ```
+
+### Running unit tests
+
+All of the unit tests can be run using the command `pytest` from the root directory.
