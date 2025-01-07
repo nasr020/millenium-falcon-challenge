@@ -33,7 +33,8 @@ def parse_falcon_config(config_file_path: str) -> FalconConfig:
 
     logger.info(
         "Converted routes_db from '%s' to '%s' based on config_file path replacement.",
-        config["routes_db"], routes_db_path
+        config["routes_db"],
+        routes_db_path,
     )
 
     falcon_config = FalconConfig(
@@ -69,15 +70,15 @@ def parse_empire_data(empire_data_path: str) -> EmpireData:
     bounty_hunters = []
     for hunter in empire_data["bounty_hunters"]:
         if "planet" not in hunter or "day" not in hunter:
-            logger.error(
-                "Bounty hunter entry missing 'planet' or 'day': %s", hunter
-            )
+            logger.error("Bounty hunter entry missing 'planet' or 'day': %s", hunter)
             raise KeyError(
                 f"Error in file {empire_data_path}: Each item in 'bounty_hunters' must contain both 'planet' and 'day' keys."
             )
         bounty_hunters.append(BountyHunter(planet=hunter["planet"], day=hunter["day"]))
 
-    empire_data_obj = EmpireData(countdown=empire_data["countdown"], bounty_hunters=bounty_hunters)
+    empire_data_obj = EmpireData(
+        countdown=empire_data["countdown"], bounty_hunters=bounty_hunters
+    )
     logger.info("EmpireData parsed successfully: %s", empire_data_obj)
     return empire_data_obj
 
@@ -105,8 +106,6 @@ def parse_routes_db(routes_db_path: str) -> Galaxy:
 
             logger.info("Added %d routes into Galaxy from the database.", len(rows))
     except sqlite3.Error as e:
-        logger.error(
-            "SQLite error occurred while reading routes: %s", str(e)
-        )
+        logger.error("SQLite error occurred while reading routes: %s", str(e))
         raise
     return galaxy

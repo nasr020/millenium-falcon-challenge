@@ -4,10 +4,19 @@ from src.cli.cli import main as cli_main
 import subprocess
 
 
-@pytest.mark.parametrize("falcon_config, empire_config, expected_return", [
-    ("./examples/example4/millennium-falcon.json", "./examples/example4/empire.json", 100),  
-])
-def test_cli_main_success(monkeypatch, falcon_config, empire_config, expected_return, capsys):
+@pytest.mark.parametrize(
+    "falcon_config, empire_config, expected_return",
+    [
+        (
+            "./examples/example4/millennium-falcon.json",
+            "./examples/example4/empire.json",
+            100,
+        ),
+    ],
+)
+def test_cli_main_success(
+    monkeypatch, falcon_config, empire_config, expected_return, capsys
+):
     """
     Test the CLI by mocking sys.argv and calling `main()` directly.
     `capsys` captures stdout/stderr for verification.
@@ -49,9 +58,15 @@ def test_cli_main_file_missing(monkeypatch, capsys):
     assert "An error occurred:" in captured.out
 
 
-@pytest.mark.parametrize("falcon_config, empire_config", [
-    ("./examples/example4/millennium-falcon.json", "./examples/example4/empire.json"),
-])
+@pytest.mark.parametrize(
+    "falcon_config, empire_config",
+    [
+        (
+            "./examples/example4/millennium-falcon.json",
+            "./examples/example4/empire.json",
+        ),
+    ],
+)
 def test_cli_subprocess_success(falcon_config, empire_config):
     """
     Example test that runs the CLI as if from a shell.
@@ -63,8 +78,7 @@ def test_cli_subprocess_success(falcon_config, empire_config):
     result = subprocess.run(cmd, capture_output=True, text=True)
 
     assert result.returncode == 0, (
-        f"CLI returned error code {result.returncode}. "
-        f"stderr: {result.stderr}"
+        f"CLI returned error code {result.returncode}. " f"stderr: {result.stderr}"
     )
 
     try:
@@ -84,7 +98,11 @@ def test_cli_subprocess_missing_files():
     Example test with non-existing files using subprocess.
     Expect an error code and some 'An error occurred' in output.
     """
-    cmd = ["give-me-the-odds", "not_found_millennium-falcon.json", "not_found_empire.json"]
+    cmd = [
+        "give-me-the-odds",
+        "not_found_millennium-falcon.json",
+        "not_found_empire.json",
+    ]
     result = subprocess.run(cmd, capture_output=True, text=True)
 
     assert result.returncode == 1, "CLI should exit with code 1 when files are missing"

@@ -19,12 +19,17 @@ class OddsService:
 
     def init_journey(self, config_file_path: str, empire_data_path: str):
         """Load Falcon Config and Empire Data and Galaxy DB routes"""
-        logger.info("Initializing journey with Falcon: %s and Empire: %s",
-                    config_file_path, empire_data_path)
+        logger.info(
+            "Initializing journey with Falcon: %s and Empire: %s",
+            config_file_path,
+            empire_data_path,
+        )
         self.empire = parse_empire_data(empire_data_path)
 
         if self.falcon_config is None:
-            logger.debug("Falcon config not yet loaded, parsing from %s", config_file_path)
+            logger.debug(
+                "Falcon config not yet loaded, parsing from %s", config_file_path
+            )
             self.falcon_config = parse_falcon_config(config_file_path)
             logger.debug("Falcon config loaded: %s", self.falcon_config)
 
@@ -36,15 +41,17 @@ class OddsService:
                 self.bounty_hunter_presence[bh.planet] = set()
             self.bounty_hunter_presence[bh.planet].add(bh.day)
 
-        logger.info("Bounty hunter presence updated: %s",
-                    self.bounty_hunter_presence)
+        logger.info("Bounty hunter presence updated: %s", self.bounty_hunter_presence)
 
     def compute_odds(self, config_file_path, empire_data_path):
         """
         Main Function to compute the odds of reaching the target planet
         """
-        logger.info("Computing odds with Falcon config: %s, Empire data: %s",
-                    config_file_path, empire_data_path)
+        logger.info(
+            "Computing odds with Falcon config: %s, Empire data: %s",
+            config_file_path,
+            empire_data_path,
+        )
         self.init_journey(config_file_path, empire_data_path)
 
         successful_journeys = self.find_successful_paths()
@@ -89,10 +96,12 @@ class OddsService:
 
         while q:
             journey_log = q.popleft()
-            logger.debug("Exploring from planet=%s, travel_days=%d, autonomy_left=%d",
-                         journey_log.current_planet,
-                         journey_log.travel_days,
-                         journey_log.autonomy_left)
+            logger.debug(
+                "Exploring from planet=%s, travel_days=%d, autonomy_left=%d",
+                journey_log.current_planet,
+                journey_log.travel_days,
+                journey_log.autonomy_left,
+            )
 
             # Explore all adjacent planets
             for next_planet in self.galaxy.successors(journey_log.current_planet):
@@ -115,11 +124,17 @@ class OddsService:
                         autonomy_left=journey_log.autonomy_left - days_to_next_planet,
                         route=journey_log.route + [journey_log.current_planet],
                     )
-                    logger.debug("Possible move to %s, total_days=%d, autonomy_left=%d",
-                                 next_planet, new_journey.travel_days, new_journey.autonomy_left)
+                    logger.debug(
+                        "Possible move to %s, total_days=%d, autonomy_left=%d",
+                        next_planet,
+                        new_journey.travel_days,
+                        new_journey.autonomy_left,
+                    )
 
                     if next_planet == self.falcon_config.arrival:
-                        logger.debug("Found successful path to arrival planet: %s", next_planet)
+                        logger.debug(
+                            "Found successful path to arrival planet: %s", next_planet
+                        )
                         successful_journeys.append(new_journey)
                     else:
                         q.append(new_journey)
@@ -132,7 +147,11 @@ class OddsService:
                     autonomy_left=self.falcon_config.autonomy,
                     route=journey_log.route + [journey_log.current_planet],
                 )
-                logger.debug("Refueling at %s => total_days=%d", journey_log.current_planet, new_journey.travel_days)
+                logger.debug(
+                    "Refueling at %s => total_days=%d",
+                    journey_log.current_planet,
+                    new_journey.travel_days,
+                )
                 q.append(new_journey)
 
             # Consider waiting at current planet
@@ -144,13 +163,20 @@ class OddsService:
                     autonomy_left=journey_log.autonomy_left - i,
                     route=journey_log.route + [journey_log.current_planet],
                 )
-                logger.debug("Waiting %d days at %s => total_days=%d, autonomy_left=%d",
-                             i, journey_log.current_planet,
-                             new_journey.travel_days, new_journey.autonomy_left)
+                logger.debug(
+                    "Waiting %d days at %s => total_days=%d, autonomy_left=%d",
+                    i,
+                    journey_log.current_planet,
+                    new_journey.travel_days,
+                    new_journey.autonomy_left,
+                )
                 q.append(new_journey)
                 i += 1
 
-        logger.debug("BFS complete. Found %d total successful journeys.", len(successful_journeys))
+        logger.debug(
+            "BFS complete. Found %d total successful journeys.",
+            len(successful_journeys),
+        )
         return successful_journeys
 
     def number_of_hunters_on_route(self, route: list[str]) -> int:
@@ -174,7 +200,9 @@ class OddsService:
                     and days in self.bounty_hunter_presence[next_planet]
                 ):
                     hunters_encountered += 1
-                    logger.debug("Encountered hunters at %s on day=%d", next_planet, days)
+                    logger.debug(
+                        "Encountered hunters at %s on day=%d", next_planet, days
+                    )
             else:
                 # Travel from planet to next planet
                 travel_time = self.galaxy.edge_value(planet, next_planet)
@@ -188,7 +216,9 @@ class OddsService:
                     and days in self.bounty_hunter_presence[next_planet]
                 ):
                     hunters_encountered += 1
-                    logger.debug("Encountered hunters at %s on day=%d", next_planet, days)
+                    logger.debug(
+                        "Encountered hunters at %s on day=%d", next_planet, days
+                    )
 
         logger.debug("Total bounty hunter encounters: %d", hunters_encountered)
         return hunters_encountered
