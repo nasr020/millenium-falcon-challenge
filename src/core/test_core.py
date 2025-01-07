@@ -4,15 +4,14 @@ from src.core.core import OddsService
 from src.schemas.data_models import FalconConfig, EmpireData, BountyHunter, JourneyLog
 from src.schemas.galaxy import Galaxy
 
+
 @pytest.fixture
 def mock_falcon_config():
     """A sample FalconConfig for testing."""
     return FalconConfig(
-        autonomy=6,
-        departure="Tatooine",
-        arrival="Endor",
-        routes_db_path="universe.db"
+        autonomy=6, departure="Tatooine", arrival="Endor", routes_db_path="universe.db"
     )
+
 
 @pytest.fixture
 def mock_empire_data():
@@ -21,9 +20,10 @@ def mock_empire_data():
         countdown=9,
         bounty_hunters=[
             BountyHunter(planet="Hoth", day=6),
-            BountyHunter(planet="Hoth", day=7)
-        ]
+            BountyHunter(planet="Hoth", day=7),
+        ],
     )
+
 
 @pytest.fixture
 def mock_galaxy():
@@ -68,7 +68,6 @@ def test_compute_odds_with_path(monkeypatch, mock_falcon_config, mock_empire_dat
         service.galaxy = Galaxy()
         service.galaxy.add_route("Tatooine", "Endor", 5)  # Single direct route
 
-
     monkeypatch.setattr(service, "init_journey", mock_init_journey)
 
     # With no bounty hunters on that path, we expect 100% odds
@@ -76,7 +75,9 @@ def test_compute_odds_with_path(monkeypatch, mock_falcon_config, mock_empire_dat
     assert odds == 100, f"Expected 100% if there's a safe path, got {odds}"
 
 
-def test_compute_odds_some_bounty_hunters(monkeypatch, mock_falcon_config, mock_empire_data):
+def test_compute_odds_some_bounty_hunters(
+    monkeypatch, mock_falcon_config, mock_empire_data
+):
     """
     If BFS finds a path but there's 1 or more bounty-hunter encounters, odds is between 0 and 100.
     """
@@ -95,11 +96,12 @@ def test_compute_odds_some_bounty_hunters(monkeypatch, mock_falcon_config, mock_
                 service.bounty_hunter_presence[bh.planet] = set()
             service.bounty_hunter_presence[bh.planet].add(bh.day)
 
-
     monkeypatch.setattr(service, "init_journey", mock_init_journey)
 
     odds = service.compute_odds("ignore.json", "ignore.json")
-    assert odds == 90, f"Expected 90% odds for a single bounty-hunter encounter, got {odds}"
+    assert (
+        odds == 90
+    ), f"Expected 90% odds for a single bounty-hunter encounter, got {odds}"
 
 
 def test_find_successful_paths_basic(mock_falcon_config, mock_empire_data, mock_galaxy):
@@ -115,6 +117,6 @@ def test_find_successful_paths_basic(mock_falcon_config, mock_empire_data, mock_
     paths = service.find_successful_paths()
     assert isinstance(paths, list), "BFS did not return a list of journeys"
     for p in paths:
-        assert p.current_planet == "Endor", (
-            f"All successful journeys must end at Endor; got {p.current_planet}"
-        )
+        assert (
+            p.current_planet == "Endor"
+        ), f"All successful journeys must end at Endor; got {p.current_planet}"

@@ -85,8 +85,11 @@ async def compute_odds(empire_file: UploadFile = File(...)):
         shutil.copyfileobj(empire_file.file, tmp)
 
     try:
-        logger.info("Computing odds for file '%s' using falcon config '%s'",
-                    tmp_path, FALCON_CONFIG)
+        logger.info(
+            "Computing odds for file '%s' using falcon config '%s'",
+            tmp_path,
+            FALCON_CONFIG,
+        )
         odds = SERVICE.compute_odds(FALCON_CONFIG, tmp_path)
 
         logger.info("Odds computed successfully: %d%%", odds)
