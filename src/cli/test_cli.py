@@ -72,7 +72,7 @@ def test_cli_subprocess_success(falcon_config, empire_config):
     Example test that runs the CLI as if from a shell.
     Needs the package  `give-me-the-odds` to be installed using `pip install -e .` to run successfully.
     """
-    # Assume 'give-me-the-odds' is on the system PATH after installing via setup.py
+    # 'give-me-the-odds' should be on the system path after installing via setup.py
     cmd = ["give-me-the-odds", falcon_config, empire_config]
 
     result = subprocess.run(cmd, capture_output=True, text=True)
