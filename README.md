@@ -2,10 +2,6 @@
 
 This repository contains the work I conducted for the Millennium Falcon Challenge proposed by Dataiku. The project involves a FastAPI backend, a React frontend, and a CLI tool to compute the odds that the Millennium Falcon reaches Endor in time based on provided configurations.
 
-## Live Demo
-
-Access the final result directly [here](http://millenium-falcon-challenge-nasr.link/). You can upload your `empire.json` file through the frontend, interact with the backend, and receive your computed odds.
-
 ## Table of Contents
 
 
